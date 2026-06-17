@@ -203,31 +203,51 @@ async function analyze() {
   resultPanel.style.display = 'none';
   rewardCard.style.display = 'none';
 
-  // 1. สร้าง Canvas ย่อขนาดรูปภาพลงเหลือความกว้าง 480px (เบามากและ AI เห็นชัดเจนพอ)
+  // 1. สร้าง Canvas ขนาดเล็กลงเพื่อบีบรูปภาพ (เบามากและส่งเร็ว)
   const resizeCanvas = document.createElement('canvas');
   const ctx = resizeCanvas.getContext('2d');
   
-  resizeCanvas.width = 480;
-  resizeCanvas.height = (video.videoHeight / video.videoWidth) * 480;
+  // ใช้ขนาดกล้องจริงมาคำนวณสัดส่วนย่อเหลือ 480px
+  const targetWidth = 480;
+  resizeCanvas.width = targetWidth;
+  resizeCanvas.height = (video.videoHeight / video.videoWidth) * targetWidth;
   
   // วาดรูปจากกล้องลงไป
   ctx.drawImage(video, 0, 0, resizeCanvas.width, resizeCanvas.height);
 
-  // 2. ดึงเป็น JPEG คุณภาพ 50% (ไฟล์จะเล็กมาก ไม่เกิน 30-50 KB หมดปัญหาภาพใหญ่เกินไปแน่นอน)
+  // 2. ดึงเป็น JPEG คุณภาพ 50% (หมดปัญหาขนาดไฟล์ใหญ่เกินไป)
   const fullBase64 = resizeCanvas.toDataURL('image/jpeg', 0.5);
 
   try {
-    // 3. ยิงไปที่ Backend
-    const res = await fetch('https://cat-challenge-api.onrender.com/api/analyze', {
+    // 3. ยิงไปที่ Backend (ตรวจสอบให้แน่ใจว่า URL ของ Render ถูกต้องและเป็น https://)
+    const res = await fetch('https://ชื่อเว็บของคุณ.onrender.com/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ imageBase64: fullBase64 }) // ส่งตัวแปรที่มีข้อมูลสมบูรณ์ไป เดี๋ยวหลังบ้านจัดการล้างข้อมูลให้เอง
+      body: JSON.stringify({ imageBase64: fullBase64 })
     });
     
+    // ตรวจสอบว่า HTTP Status ปกติหรือไม่ (เช่น 200 OK)
+    if (!res.ok) {
+       throw new Error('Server responded with error code ' + res.status);
+    }
+    
     const parsed = await res.json();
+    
+    // บังคับแปลงประเภทข้อมูลให้อยู่ในรูปแบบตัวเลขที่ถูกต้องก่อนส่งให้ระบบวาด SVG/หลอดคะแนน
+    if (parsed && typeof parsed.score !== 'undefined') {
+      parsed.score = Number(parsed.score) || 0;
+    } else {
+      parsed.score = 0;
+    }
+    
     showResult(parsed);
   } catch(e) {
-    showResult({score:0, verdict_th:'เชื่อมต่อล้มเหลว', detail_th:'ไม่สามารถดึงข้อมูลจากระบบวิเคราะห์ได้'});
+    console.error("เกิดข้อผิดพลาดระหว่าง Fetch:", e); // พิมพ์ Error จริงๆ ลง Console เพื่อให้เราตรวจเช็คได้ง่ายขึ้น
+    showResult({
+      score: 0, 
+      verdict_th: 'เชื่อมต่อล้มเหลว', 
+      detail_th: 'ไม่สามารถติดต่อเซิร์ฟเวอร์วิเคราะห์ได้ กรุณาลองใหม่อีกครั้ง'
+    });
   }
   loading.style.display = 'none';
   btnRestart.style.display = 'block';
