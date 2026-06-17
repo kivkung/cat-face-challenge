@@ -218,7 +218,7 @@ async function analyze() {
 
   try {
     // 3. ยิงไปที่ Backend
-    const res = await fetch('http://localhost:3000/api/analyze', {
+    const res = await fetch('https://cat-challenge-api.onrender.com/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: fullBase64 }) // ส่งตัวแปรที่มีข้อมูลสมบูรณ์ไป เดี๋ยวหลังบ้านจัดการล้างข้อมูลให้เอง

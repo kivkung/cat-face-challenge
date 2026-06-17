@@ -3,6 +3,10 @@ import express from 'express';
 import cors from 'cors';
 import { GoogleGenAI } from '@google/genai';
 
+app.use(cors({
+  origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://majestic-lily-d27a3f.netlify.app/']
+}));
+
 const app = express();
 // ขยายขนาดการรับข้อมูลให้เหมาะสม
 app.use(express.json({ limit: '10mb' }));
