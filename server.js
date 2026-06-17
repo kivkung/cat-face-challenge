@@ -9,7 +9,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 
 app.use(cors({
-  origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://majestic-lily-d27a3f.netlify.app/']
+  origin: ['http://127.0.0.1:5500', 'http://localhost:3000', 'https://cat-face-challenger.netlify.app']
 }));
 
 if (!process.env.GEMINI_API_KEY) {
