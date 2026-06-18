@@ -19,7 +19,7 @@ if (!process.env.GEMINI_API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-app.post('https://cat-face-challenge.onrender.com/api/analyze', async (req, res) => {
+app.post('/api/analyze', async (req, res) => {
   try {
     let { imageBase64 } = req.body;
 

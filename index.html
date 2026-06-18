@@ -220,7 +220,7 @@ async function analyze() {
 
   try {
     // 3. ยิงไปที่ Backend (ตรวจสอบให้แน่ใจว่า URL ของ Render ถูกต้องและเป็น https://)
-    const res = await fetch('https://cat-face-challenge.onrender.com', {
+    const res = await fetch('https://cat-face-challenge.onrender.com/api/analyze', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ imageBase64: fullBase64 })
