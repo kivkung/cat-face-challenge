@@ -262,8 +262,17 @@ function showResult(d) {
   resultPanel.style.display = 'block';
   document.getElementById('r-emoji').textContent = icons[level];
   document.getElementById('r-verdict').textContent = d.verdict_th || '';
-  document.getElementById('conf-fill').style.width = score + '%';
-  document.getElementById('conf-num').textContent = score + '%';
+  
+  const confFill = document.getElementById('conf-fill');
+  if (confFill) {
+    confFill.style.width = score + '%';
+  }
+
+  const confNum = document.getElementById('conf-num');
+  if (confNum) {
+    confNum.textContent = score + '%';
+  }
+  
   document.getElementById('r-detail').textContent = d.detail_th || '';
 
   if (level === 'pass') {
