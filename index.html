@@ -3,30 +3,36 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Inter:wght@300;400;500&display=swap');
   *{box-sizing:border-box;margin:0;padding:0;}
   body{background:#000;font-family:'Inter',sans-serif;color:#fff;min-height:100vh;}
-  .app{display:flex;flex-direction:column;align-items:center;padding:24px 16px;min-height:100vh;background:linear-gradient(160deg,#000814 0%,#001133 50%,#000a1f 100%);}
 
-  .title-wrap{text-align:center;margin-bottom:20px;}
-  .title{font-family:'Rajdhani',sans-serif;font-size:26px;font-weight:700;letter-spacing:2px;color:#4fc3f7;text-transform:uppercase;}
+  /* ── Layout ── */
+  .app{display:flex;flex-direction:column;align-items:center;padding:clamp(16px,4vw,32px) clamp(12px,4vw,24px);min-height:100vh;background:linear-gradient(160deg,#000814 0%,#001133 50%,#000a1f 100%);}
+
+  /* ── Title ── */
+  .title-wrap{text-align:center;margin-bottom:clamp(14px,3vw,24px);}
+  .title{font-family:'Rajdhani',sans-serif;font-size:clamp(20px,5vw,28px);font-weight:700;letter-spacing:2px;color:#4fc3f7;text-transform:uppercase;}
   .title span{color:#0d47a1;}
-  .title-top{font-size: 40px;}
-  .subtitle{font-size:12px;color:#546e7a;letter-spacing:1px;margin-top:4px;}
+  .title-top{font-size:clamp(28px,8vw,46px);}
+  .subtitle{font-size:clamp(11px,2.5vw,13px);color:#546e7a;letter-spacing:1px;margin-top:4px;}
 
-  .ref-row{display:flex;align-items:center;gap:16px;margin-bottom:20px;background:rgba(13,71,161,0.15);border:0.5px solid rgba(79,195,247,0.2);border-radius:12px;padding:12px 16px;width:100%;max-width:500px;}
-  .ref-img{width:200px;height:300px;border-radius:8px;object-fit:cover;border:1.5px solid #0d47a1;}
-  .ref-info{flex:1;}
-  .ref-label{font-size:10px;color:#546e7a;letter-spacing:1px;margin-bottom:2px;}
-  .ref-name{font-size:14px;font-weight:500;color:#4fc3f7;}
-  .ref-detect{font-size:11px;color:#78909c;margin-top:2px;}
-  .target-badges{display:flex;gap:6px;margin-top:6px;}
-  .badge{font-size:10px;padding:2px 8px;border-radius:20px;border:0.5px solid;font-weight:500;}
+  /* ── Reference row ── */
+  .ref-row{display:flex;align-items:center;gap:clamp(10px,3vw,18px);margin-bottom:clamp(14px,3vw,24px);background:rgba(13,71,161,0.15);border:0.5px solid rgba(79,195,247,0.2);border-radius:12px;padding:clamp(10px,2.5vw,14px) clamp(12px,3vw,18px);width:100%;max-width:560px;}
+  .ref-img{width:clamp(80px,20vw,130px);height:clamp(110px,28vw,180px);border-radius:8px;object-fit:cover;border:1.5px solid #0d47a1;flex-shrink:0;}
+  .ref-info{flex:1;min-width:0;}
+  .ref-label{font-size:clamp(9px,2vw,11px);color:#546e7a;letter-spacing:1px;margin-bottom:2px;}
+  .ref-name{font-size:clamp(13px,3vw,15px);font-weight:500;color:#4fc3f7;}
+  .ref-detect{font-size:clamp(10px,2.5vw,12px);color:#78909c;margin-top:2px;}
+  .target-badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;}
+  .badge{font-size:clamp(9px,2vw,11px);padding:2px 8px;border-radius:20px;border:0.5px solid;font-weight:500;}
   .badge-eye{color:#81d4fa;border-color:#0288d1;background:rgba(2,136,209,0.15);}
   .badge-tongue{color:#f48fb1;border-color:#c2185b;background:rgba(194,24,91,0.15);}
 
-  .cam-wrap{position:relative;width:100%;max-width:500px;margin-bottom:16px;}
+  /* ── Camera ── */
+  .cam-wrap{position:relative;width:100%;max-width:560px;margin-bottom:clamp(12px,3vw,18px);}
   .cam-frame{position:relative;width:100%;aspect-ratio:4/3;border-radius:16px;overflow:hidden;border:1.5px solid rgba(79,195,247,0.25);background:#000d1a;}
   video,canvas.snapshot{width:100%;height:100%;object-fit:cover;display:block;border-radius:14px;}
   canvas.snapshot{display:none;position:absolute;top:0;left:0;}
@@ -41,54 +47,89 @@
   .corner-br{bottom:10px;right:10px;border-width:0 2px 2px 0;border-radius:0 0 3px 0;}
 
   .face-guide{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);width:52%;aspect-ratio:3/4;border:1.5px dashed rgba(79,195,247,0.3);border-radius:50%;pointer-events:none;}
+  .cam-status{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:clamp(9px,2vw,11px);color:rgba(79,195,247,0.6);letter-spacing:1px;white-space:nowrap;}
 
-  .cam-status{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(79,195,247,0.6);letter-spacing:1px;white-space:nowrap;}
-
-  .btn-row{display:flex;justify-content:center;gap:12px;width:100%;max-width:500px;margin-bottom:16px;}
-  .btn{padding:12px 32px;border-radius:8px;font-size:14px;font-weight:600;font-family:'Rajdhani',sans-serif;letter-spacing:2px;cursor:pointer;border:none;text-transform:uppercase;transition:all 0.2s;min-width:140px;}
+  /* ── Buttons ── */
+  .btn-row{display:flex;justify-content:center;gap:clamp(8px,2.5vw,14px);width:100%;max-width:560px;margin-bottom:clamp(12px,3vw,18px);}
+  .btn{padding:clamp(10px,2.5vw,13px) clamp(20px,5vw,36px);border-radius:8px;font-size:clamp(13px,3vw,15px);font-weight:600;font-family:'Rajdhani',sans-serif;letter-spacing:2px;cursor:pointer;border:none;text-transform:uppercase;transition:all 0.2s;min-width:clamp(110px,28vw,150px);}
   .btn-shot{background:#0d47a1;color:#4fc3f7;border:1px solid #1565c0;}
   .btn-shot:hover:not(:disabled){background:#1565c0;box-shadow:0 0 16px rgba(79,195,247,0.3);}
+  .btn-shot:active:not(:disabled){transform:scale(0.97);}
   .btn-shot:disabled{opacity:0.4;cursor:not-allowed;}
   .btn-restart{background:transparent;color:#546e7a;border:1px solid #263238;display:none;}
   .btn-restart:hover{color:#78909c;border-color:#37474f;}
+  .btn-restart:active{transform:scale(0.97);}
 
-  .result-panel{width:100%;max-width:500px;border-radius:12px;padding:16px;display:none;margin-bottom:16px;}
+  /* ── Result panel ── */
+  .result-panel{width:100%;max-width:560px;border-radius:12px;padding:clamp(12px,3vw,18px);display:none;margin-bottom:clamp(12px,3vw,18px);}
   .result-panel.pass{background:rgba(0,100,0,0.2);border:1px solid rgba(0,200,83,0.4);}
   .result-panel.fail{background:rgba(100,0,0,0.2);border:1px solid rgba(229,57,53,0.4);}
   .result-panel.partial{background:rgba(100,60,0,0.2);border:1px solid rgba(255,160,0,0.4);}
 
   .result-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-  .result-emoji{font-size:28px;}
-  .result-verdict{font-family:'Rajdhani',sans-serif;font-size:18px;font-weight:700;letter-spacing:1px;}
+  .result-emoji{font-size:clamp(24px,5vw,30px);}
+  .result-verdict{font-family:'Rajdhani',sans-serif;font-size:clamp(16px,4vw,20px);font-weight:700;letter-spacing:1px;}
   .pass .result-verdict{color:#00c853;}
   .fail .result-verdict{color:#e53935;}
   .partial .result-verdict{color:#ffa000;}
 
   .conf-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-  .conf-bar{flex:1;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;}
+  .conf-bar{flex:1;height:5px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;}
   .conf-fill{height:100%;border-radius:2px;transition:width 0.6s ease;}
   .pass .conf-fill{background:#00c853;}
   .fail .conf-fill{background:#e53935;}
   .partial .conf-fill{background:#ffa000;}
-  .conf-num{font-size:12px;font-weight:500;min-width:36px;text-align:right;}
+  .conf-num{font-size:clamp(11px,2.5vw,13px);font-weight:500;min-width:36px;text-align:right;}
   .pass .conf-num{color:#00c853;}
   .fail .conf-num{color:#e53935;}
   .partial .conf-num{color:#ffa000;}
 
-  .result-detail{font-size:12px;color:#90a4ae;line-height:1.6;}
+  .result-detail{font-size:clamp(11px,2.5vw,13px);color:#90a4ae;line-height:1.6;}
 
-  .reward-card{width:100%;max-width:500px;border-radius:12px;padding:16px;background:rgba(13,71,161,0.25);border:1px solid rgba(79,195,247,0.35);display:none;text-align:center;}
-  .reward-title{font-family:'Rajdhani',sans-serif;font-size:13px;letter-spacing:2px;color:#546e7a;margin-bottom:8px;}
-  .reward-link{display:inline-block;padding:10px 24px;background:#0d47a1;color:#4fc3f7;text-decoration:none;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:14px;font-weight:700;letter-spacing:1px;border:1px solid #1565c0;transition:all 0.2s;}
+  /* ── Reward card ── */
+  .reward-card{width:100%;max-width:560px;border-radius:12px;padding:clamp(12px,3vw,18px);background:rgba(13,71,161,0.25);border:1px solid rgba(79,195,247,0.35);display:none;text-align:center;}
+  .reward-title{font-family:'Rajdhani',sans-serif;font-size:clamp(11px,2.5vw,14px);letter-spacing:2px;color:#546e7a;margin-bottom:8px;}
+  .reward-link{display:inline-block;padding:clamp(9px,2.5vw,12px) clamp(20px,4vw,28px);background:#0d47a1;color:#4fc3f7;text-decoration:none;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:clamp(13px,3vw,15px);font-weight:700;letter-spacing:1px;border:1px solid #1565c0;transition:all 0.2s;}
   .reward-link:hover{background:#1565c0;box-shadow:0 0 20px rgba(79,195,247,0.4);}
+  .reward-link:active{transform:scale(0.97);}
 
+  /* ── Loading ── */
   .loading-wrap{display:none;flex-direction:column;align-items:center;gap:8px;padding:8px 0;}
   .loading-dots{display:flex;gap:5px;}
-  .loading-dots span{width:6px;height:6px;border-radius:50%;background:#4fc3f7;animation:dot 1.2s ease-in-out infinite;}
+  .loading-dots span{width:7px;height:7px;border-radius:50%;background:#4fc3f7;animation:dot 1.2s ease-in-out infinite;}
   .loading-dots span:nth-child(2){animation-delay:.2s;}
   .loading-dots span:nth-child(3){animation-delay:.4s;}
   @keyframes dot{0%,80%,100%{opacity:.2;transform:scale(.7)}40%{opacity:1;transform:scale(1)}}
-  .loading-text{font-size:11px;color:#546e7a;letter-spacing:1px;}
+  .loading-text{font-size:clamp(10px,2.5vw,12px);color:#546e7a;letter-spacing:1px;}
+
+  /* ── Desktop: wider layout with side-by-side panels ── */
+  @media(min-width:768px){
+    .app{padding:36px 24px;}
+    .ref-row,.cam-wrap,.btn-row,.result-panel,.reward-card{max-width:560px;}
+    .ref-img{width:130px;height:180px;}
+  }
+
+  /* ── Prevent tap highlight on mobile ── */
+  .btn{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+
+  /* ── Quiz card ── */
+  .quiz-card{width:100%;max-width:560px;border-radius:12px;padding:clamp(14px,3vw,20px);background:rgba(13,71,161,0.18);border:1px solid rgba(79,195,247,0.3);display:none;margin-bottom:clamp(12px,3vw,18px);text-align:center;}
+  .quiz-title{font-family:'Rajdhani',sans-serif;font-size:clamp(11px,2.5vw,13px);letter-spacing:2px;color:#546e7a;margin-bottom:10px;}
+  .quiz-question{font-family:'Rajdhani',sans-serif;font-size:clamp(18px,5vw,26px);font-weight:700;color:#4fc3f7;margin-bottom:14px;letter-spacing:1px;}
+  .quiz-input-row{display:flex;gap:8px;justify-content:center;align-items:center;}
+  .quiz-input{background:rgba(0,0,0,0.4);border:1px solid rgba(79,195,247,0.35);border-radius:8px;color:#fff;font-family:'Rajdhani',sans-serif;font-size:clamp(16px,4vw,20px);font-weight:600;padding:clamp(8px,2vw,11px) clamp(12px,3vw,16px);width:clamp(90px,25vw,120px);text-align:center;outline:none;letter-spacing:1px;-webkit-tap-highlight-color:transparent;}
+  .quiz-input:focus{border-color:#4fc3f7;box-shadow:0 0 8px rgba(79,195,247,0.25);}
+  .quiz-input.shake{animation:shake 0.4s ease;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  .btn-quiz{background:#0d47a1;color:#4fc3f7;border:1px solid #1565c0;padding:clamp(9px,2.5vw,12px) clamp(18px,4vw,26px);border-radius:8px;font-size:clamp(13px,3vw,15px);font-weight:600;font-family:'Rajdhani',sans-serif;letter-spacing:2px;cursor:pointer;text-transform:uppercase;transition:all 0.2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .btn-quiz:hover{background:#1565c0;box-shadow:0 0 14px rgba(79,195,247,0.3);}
+  .btn-quiz:active{transform:scale(0.97);}
+  .quiz-hint{font-size:clamp(10px,2.5vw,12px);color:#e53935;margin-top:8px;min-height:18px;}
+
+  /* ── Mute button ── */
+  .mute-btn{position:fixed;bottom:clamp(14px,3vw,20px);right:clamp(14px,3vw,20px);width:42px;height:42px;border-radius:50%;background:rgba(13,71,161,0.55);border:1px solid rgba(79,195,247,0.35);color:#4fc3f7;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(4px);transition:all 0.2s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .mute-btn:hover{background:rgba(21,101,192,0.75);box-shadow:0 0 12px rgba(79,195,247,0.3);}
+  .mute-btn:active{transform:scale(0.93);}
 </style>
 </head>
 <body>
@@ -147,13 +188,26 @@
     <div class="result-detail" id="r-detail"></div>
   </div>
 
+  <div class="quiz-card" id="quiz-card">
+    <div class="quiz-title">🔐 FINAL VERIFICATION</div>
+    <div class="quiz-question">20 + 20 + 20 + 7 = ?</div>
+    <div class="quiz-input-row">
+      <input class="quiz-input" id="quiz-input" type="number" inputmode="numeric" pattern="[0-9]*" placeholder="???" onkeydown="if(event.key==='Enter')checkQuiz()">
+      <button class="btn-quiz" onclick="checkQuiz()">✔ ยืนยัน</button>
+    </div>
+    <div class="quiz-hint" id="quiz-hint"></div>
+  </div>
+
   <div class="reward-card" id="reward-card">
-    <div class="reward-title">REWARD UNLOCKED</div>
+    <div class="reward-title">REWARD UNLOCKED 🎉</div>
     <a class="reward-link" href="https://www.instagram.com/pythoxie/" target="_blank">
       👤 facebook.com/kivkungX
     </a>
   </div>
 </div>
+
+<audio id="bg-music" src="bg-music.mp3" loop autoplay="true"></audio>
+<button class="mute-btn" id="mute-btn" title="เปิด/ปิดเสียง">🔊</button>
 
 <script>
 const video = document.getElementById('video');
@@ -164,7 +218,34 @@ const btnRestart = document.getElementById('btn-restart');
 const loading = document.getElementById('loading');
 const resultPanel = document.getElementById('result-panel');
 const rewardCard = document.getElementById('reward-card');
+const quizCard = document.getElementById('quiz-card');
 const scanLine = document.getElementById('scan-line');
+
+
+// ── Background music ──
+const bgMusic = document.getElementById('bg-music');
+const muteBtn = document.getElementById('mute-btn');
+let musicStarted = false;
+
+function startMusic() {
+  if (musicStarted) return;
+  bgMusic.volume = 0.35;
+  bgMusic.play().then(() => { musicStarted = true; }).catch(() => {});
+}
+
+muteBtn.addEventListener('click', () => {
+  if (bgMusic.paused) {
+    bgMusic.play().catch(() => {});
+    muteBtn.textContent = '🔊';
+  } else {
+    bgMusic.pause();
+    muteBtn.textContent = '🔇';
+  }
+});
+
+// เริ่มเพลงทันทีที่ผู้ใช้แตะหน้าจอครั้งแรก (autoplay policy)
+document.addEventListener('click', startMusic, { once: true });
+document.addEventListener('touchstart', startMusic, { once: true });
 
 let stream = null;
 let shotMode = false;
@@ -276,7 +357,27 @@ function showResult(d) {
   document.getElementById('r-detail').textContent = d.detail_th || '';
 
   if (level === 'pass') {
+    quizCard.style.display = 'block';
+    document.getElementById('quiz-input').value = '';
+    document.getElementById('quiz-hint').textContent = '';
+    setTimeout(() => document.getElementById('quiz-input').focus(), 100);
+  }
+}
+
+function checkQuiz() {
+  const val = parseInt(document.getElementById('quiz-input').value, 10);
+  const hint = document.getElementById('quiz-hint');
+  if (val === 67) {
+    quizCard.style.display = 'none';
     rewardCard.style.display = 'block';
+  } else {
+    hint.textContent = '❌ คำตอบไม่ถูกต้อง ลองใหม่อีกครั้ง!';
+    const input = document.getElementById('quiz-input');
+    input.classList.remove('shake');
+    void input.offsetWidth;
+    input.classList.add('shake');
+    input.value = '';
+    setTimeout(() => input.focus(), 50);
   }
 }
 
@@ -290,6 +391,7 @@ function restart() {
   btnRestart.style.display = 'none';
   resultPanel.style.display = 'none';
   rewardCard.style.display = 'none';
+  quizCard.style.display = 'none';
   loading.style.display = 'none';
 }
 
